@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Food | Foodie</title>
+  <link rel="shortcut icon" href="../images/fav.png" type="image/x-icon">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: url(./2.jpg);
+      background-size: cover;
+      background-position: center;
+    }
+    h2 {
+      margin-top: 50px;
+        font-size: 2.5rem;
+        font-weight: bold;
+        color:rgb(227, 46, 46);
+        margin-bottom: 10px;
+        text-shadow: 1px 4px 10px rgb(207, 99, 99);
+    }
+
+    p {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #393636;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+    
+    .search-container {
+      display: flex;
+      margin-top: 20px;
+    }
+
+    .search-input {
+      padding: 10px;
+      font-size: 16px;
+      width: 300px;
+      border: 2px solid #ccc;
+      border-right: none;
+      border-radius: 25px 0 0 25px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: rgb(227, 46, 46);
+    }
+
+    .search-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      color: white;
+      background-color: rgb(227, 46, 46);
+      border: 2px solid rgb(227, 46, 46);
+      border-radius: 0 25px 25px 0;
+      border-left: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .search-button:hover {
+      background-color: rgb(227, 46, 46);
+    }
+    @media screen and (min-width:320px) and (max-width:425px) {
+      .search-container{
+        width: 100% !important;
+        padding-left: 5px;
+        padding-right: 20px;
+      }
+      h2{
+        margin-top: 100px;
+        margin-bottom: 25px;
+      }      
+    }
+  </style>
+</head>
+<body>
+  <h2>Recipe Finder</h2>
+  <p>Search mouth-watering recipes to satisfy your cravings</p>
+  <div class="search-container">
+    <input type="text" id="search-input" class="search-input" placeholder="Search...">
+    <button class="search-button" onclick="searchRecipes()">Search</button>
+  </div>
+
+  <script>
+    function searchRecipes() {
+      const searchInput = document.getElementById("search-input").value.trim();
+      if (searchInput !== "") {
+        // Redirect to result page with query parameter
+        window.location.href = `ResultPage.html?query=${encodeURIComponent(searchInput)}`;
+      } else {
+        alert("Please enter a search term!");
+      }
+    }
+  </script>
+</body>
+</html>
