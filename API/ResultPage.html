@@ -16,6 +16,7 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+
     <style>
       body {
         font-family: "Poppins", sans-serif;
@@ -109,10 +110,27 @@
         color: #fff;
         border-radius: 5px;
         border: 0;
+        text-align: center;
         cursor: pointer;
         transition: background-color 0.3s ease;
       }
 
+      .card-btns {
+        display: flex;
+        gap: 10px;
+        margin: auto;
+      }
+      .recipe-card .card-btns .favbtn {
+        background-color: transparent;
+      }
+      .recipe-card .card-btns .favbtn:hover {
+        background-color: rgba(193, 192, 192, 0.5);
+      }
+      .recipe-card .card-btns .favbtn img {
+        width: 30px;
+        height: 30px;
+        margin-bottom: 0px;
+      }
       .recipe-card button:hover {
         background: rgb(73, 141, 73);
       }
@@ -174,15 +192,14 @@
         border: none;
         cursor: pointer;
         transition: background-color 0.3s ease;
-    }
+      }
 
-    .view-more-btn:hover {
+      .view-more-btn:hover {
         background: rgb(73, 141, 73);
-    }
+      }
     </style>
   </head>
   <body>
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">
@@ -191,7 +208,10 @@
         <span class="navbar-text mx-auto">
           Welcome, <span id="userName">User</span>!
         </span>
-        <button class="btn btn-transparent" id="logout-button">Logout</button>
+        <div class="nab-btns">
+          <button class="btn btn-transparent me-2" id="favorites-button" onclick="viewFavorites()">Favorites</button>
+          <button class="btn btn-transparent" id="logout-button">Logout</button>
+        </div>
       </div>
     </nav>
 
@@ -200,16 +220,16 @@
       <div class="container">
         <div class="recipes" id="recipes"></div>
       </div>
-      <div class="popup-card" id="popupCard">
-        <button class="close-btn" onclick="closeRecipe()">X</button>
-        <h3 id="recipeTitle"></h3>
-        <p id="recipeDetails"></p>
-      </div>
     </div>
 
-<script type="module" src="logout.js"></script>
+    <script type="module" src="./logout.js"></script>
+
+    <!-- <script>
+      localStorage.clear()
+    </script> -->
 
     <script>
+      // API SCRIPT
       const urlParams = new URLSearchParams(window.location.search);
       const query = urlParams.get("query");
 
@@ -224,18 +244,20 @@
               data.meals.forEach((meal) => {
                 const card = document.createElement("div");
                 card.classList.add("recipe-card");
-
                 card.innerHTML = `
                     <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
                     <div class="content">
                         <h3>${meal.strMeal}</h3>
                         <p>${meal.strCategory}</p>
                         <p>${meal.strArea}</p>
-                        <button class="view-more-btn" onclick="viewRecipe('${meal.idMeal}')">View More</button>
+                        <div class="card-btns">
+                          <button class="favbtn" onclick="toggleFavorite('${meal.idMeal}', '${meal.strMeal}', '${meal.strMealThumb}', this)">
+                            <img src="./favs/heart.png" alt="">
+                          </button>
+                          <button class="view-more-btn" onclick="viewRecipe('${meal.idMeal}')">View More</button>
+                        </div>
                     </div>
                 `;
-
-                card.onclick = () => viewRecipe(meal.idMeal);
                 recipesDiv.appendChild(card);
               });
             }
@@ -243,23 +265,34 @@
           .catch((error) => console.error("Error fetching data:", error));
       }
 
-      function viewRecipe(mealId) {
-        const popupCard = document.getElementById("popupCard");
-        const recipeTitle = document.getElementById("recipeTitle");
-        const recipeDetails = document.getElementById("recipeDetails");
+      // Favorite functionality
+      function toggleFavorite(id, name, image, button) {
+        const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+        const favIndex = favorites.findIndex((item) => item.id === id);
 
-        fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`)
-          .then((response) => response.json())
-          .then((data) => {
-            const meal = data.meals[0];
-            recipeTitle.innerText = meal.strMeal;
-            recipeDetails.innerText = meal.strInstructions;
-            popupCard.style.display = "block";
-          });
+        const favImage = button.querySelector("img");
+        if (favIndex === -1) {
+          // Add to favorites
+          favorites.push({ id, name, image });
+          favImage.src = "./favs/fillht.png";
+        } else {
+          // Remove from favorites
+          favorites.splice(favIndex, 1);
+          favImage.src = "./favs/heart.png";
+        }
+
+        localStorage.setItem("favorites", JSON.stringify(favorites));
       }
 
-      function closeRecipe() {
-        document.getElementById("popupCard").style.display = "none";
+      // View favorites page
+      function viewFavorites() {
+        // window.location.href = "favorites.html";
+        window.open("favorites.html", "_blank");
+
+      }
+
+      function viewRecipe(mealId) {
+        // Functionality to view more details about the recipe
       }
 
       if (query) {
