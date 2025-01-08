@@ -69,6 +69,7 @@ function redirectToHome() {
   signOut(auth)
     .then(() => {
       localStorage.removeItem("userData");
+      localStorage.clear() //clears the objects in localstorage
       window.location.href = "../index.html";
     })
     .catch((error) => {
